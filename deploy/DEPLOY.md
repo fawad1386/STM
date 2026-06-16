@@ -18,8 +18,12 @@ Live stack:
 The fine-tuned model (~532 MB) is gitignored. Cloud hosts download it from Hugging Face Hub.
 
 ```bash
-pip install huggingface_hub
-huggingface-cli login          # create free account at huggingface.co
+python3 -m pip install huggingface_hub
+
+# Add CLI to PATH (macOS user install — one-time per terminal, or add to ~/.zshrc)
+export PATH="$HOME/Library/Python/3.9/bin:$PATH"
+
+hf auth login                   # create free account at huggingface.co if needed
 
 bash scripts/upload-model-to-hf.sh YOUR_USERNAME/stm-sentiment
 ```

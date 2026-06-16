@@ -24,12 +24,23 @@ if [[ ! -f "$MODEL_DIR/model.safetensors" ]]; then
   exit 1
 fi
 
-if ! command -v huggingface-cli &>/dev/null; then
-  echo "Install: pip install huggingface_hub && huggingface-cli login"
+if ! command -v hf &>/dev/null && ! command -v huggingface-cli &>/dev/null; then
+  export PATH="$HOME/Library/Python/3.9/bin:$HOME/.local/bin:$PATH"
+fi
+
+HF="$(command -v hf || command -v huggingface-cli || true)"
+if [[ -z "$HF" ]]; then
+  echo "Install: python3 -m pip install huggingface_hub"
+  echo "Then add Python scripts to PATH:"
+  echo "  export PATH=\"\$HOME/Library/Python/3.9/bin:\$PATH\""
   exit 1
 fi
 
 echo "Uploading $MODEL_DIR → hf.co/$REPO_ID"
-huggingface-cli upload "$REPO_ID" "$MODEL_DIR" . --repo-type model
+if [[ "$HF" == *hf ]]; then
+  hf upload "$REPO_ID" "$MODEL_DIR" . --repo-type model
+else
+  huggingface-cli upload "$REPO_ID" "$MODEL_DIR" . --repo-type model
+fi
 echo ""
 echo "Done. Set TRANSFORMER_HF_REPO=$REPO_ID in Render / Hugging Face Space secrets."

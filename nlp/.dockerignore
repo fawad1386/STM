@@ -1,6 +1,8 @@
 *
 !app.py
 !transformer_predictor.py
+!download_model.py
 !transformer_model/**
 !requirements-docker.txt
 !Dockerfile
+!Dockerfile.cloud

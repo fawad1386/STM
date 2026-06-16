@@ -113,7 +113,9 @@ Full step-by-step guide: **[deploy/DEPLOY.md](deploy/DEPLOY.md)**
 Upload the fine-tuned model (gitignored, ~532 MB):
 
 ```bash
-pip install huggingface_hub && huggingface-cli login
+python3 -m pip install huggingface_hub
+export PATH="$HOME/Library/Python/3.9/bin:$PATH"
+hf auth login
 bash scripts/upload-model-to-hf.sh YOUR_USERNAME/stm-sentiment
 ```
 

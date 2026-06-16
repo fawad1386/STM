@@ -1,0 +1,46 @@
+# Render Blueprint — free tier
+# Deploy: Render Dashboard → New → Blueprint → connect github.com/fawad1386/STM
+#
+# Before deploying:
+#   1. Upload model: bash scripts/upload-model-to-hf.sh YOUR_HF_USERNAME/stm-sentiment
+#   2. Set TRANSFORMER_HF_REPO in Render dashboard (sync: false below)
+#   3. Set MONGODB_URI and CORS_ORIGIN after you know your Vercel URL
+
+services:
+  - type: web
+    name: stm-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: ML_SERVICE_URL
+        fromService:
+          type: web
+          name: stm-ml
+          envVarKey: RENDER_EXTERNAL_URL
+      - key: ML_TIMEOUT_MS
+        value: "60000"
+      - key: CORS_ORIGIN
+        sync: false
+      - key: ADMIN_API_KEY
+        generateValue: true
+
+  - type: web
+    name: stm-ml
+    runtime: docker
+    rootDir: nlp
+    dockerfilePath: ./Dockerfile.cloud
+    plan: free
+    healthCheckPath: /health
+    envVars:
+      - key: MODEL_TYPE
+        value: transformer
+      - key: TRANSFORMER_HF_REPO
+        sync: false

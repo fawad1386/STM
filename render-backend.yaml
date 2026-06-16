@@ -1,0 +1,25 @@
+# Render — backend only (use with Hugging Face Space for ML)
+# Recommended free setup: Vercel frontend + this backend + HF Space ML
+
+services:
+  - type: web
+    name: stm-backend
+    runtime: node
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: node server.js
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: MONGODB_URI
+        sync: false
+      - key: ML_SERVICE_URL
+        sync: false
+      - key: ML_TIMEOUT_MS
+        value: "90000"
+      - key: CORS_ORIGIN
+        sync: false
+      - key: ADMIN_API_KEY
+        generateValue: true

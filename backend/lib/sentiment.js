@@ -2,7 +2,11 @@
  * Sentiment analysis: LSTM inference service with lexicon fallback.
  */
 
-const ML_SERVICE_URL = process.env.ML_SERVICE_URL || 'http://localhost:5001';
+const ML_SERVICE_URL = (() => {
+  const raw = (process.env.ML_SERVICE_URL || 'http://localhost:5001').replace(/\/$/, '');
+  if (raw.startsWith('http://') || raw.startsWith('https://')) return raw;
+  return `https://${raw}`;
+})();
 const ML_TIMEOUT_MS = Number(process.env.ML_TIMEOUT_MS || 10000);
 
 const POSITIVE_WORDS = [

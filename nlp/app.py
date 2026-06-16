@@ -29,8 +29,26 @@ def _build_predictor():
 def get_predictor():
     global predictor
     if predictor is None:
+        _ensure_model()
         predictor = _build_predictor()
     return predictor
+
+
+def _ensure_model():
+    """Download weights from Hugging Face Hub when TRANSFORMER_HF_REPO is set (cloud deploy)."""
+    from pathlib import Path
+
+    model_dir = Path(os.environ.get("TRANSFORMER_PATH", "transformer_model"))
+    if (model_dir / "config.json").exists():
+        return
+
+    repo = os.environ.get("TRANSFORMER_HF_REPO", "").strip()
+    if not repo:
+        return
+
+    from download_model import main
+
+    main()
 
 
 @app.get("/health")

@@ -97,29 +97,33 @@ Open http://localhost:5173
 
 ## Deploy to the cloud (public demo URL)
 
-### Frontend → Vercel
+Full step-by-step guide: **[deploy/DEPLOY.md](deploy/DEPLOY.md)**
 
-1. Push repo to GitHub.
-2. Import project in [Vercel](https://vercel.com) → root: `frontend`.
-3. Set env: `VITE_API_URL=https://YOUR-BACKEND.onrender.com/api`
-4. Deploy.
+### Quick overview (all free)
 
-### Backend → Render
+| Service | Platform | Notes |
+|---------|----------|-------|
+| Frontend | **Vercel** | Root: `frontend`, env: `VITE_API_URL` |
+| Backend | **Render** | Root: `backend`, use `render-backend.yaml` |
+| ML | **Hugging Face Spaces** | 16 GB RAM free — Render 512 MB is too small |
+| Database | **MongoDB Atlas** | Your existing M0 cluster |
 
-1. New **Web Service** → root: `backend`, build: `npm install`, start: `node server.js`.
-2. Env vars:
-   - `MONGODB_URI` — [MongoDB Atlas](https://www.mongodb.com/atlas) connection string
-   - `ML_SERVICE_URL` — URL of ML service below
-   - `CORS_ORIGIN` — your Vercel URL (e.g. `https://smart-trust-meter.vercel.app`)
-   - `ADMIN_API_KEY` — random secret for admin routes
+### Before you deploy
 
-### ML service → Render
+Upload the fine-tuned model (gitignored, ~532 MB):
 
-1. New **Web Service** → root: `nlp`, Dockerfile path: `Dockerfile`.
-2. Env: `MODEL_TYPE=transformer`, `ML_PORT=10000` (Render sets `PORT`; update `app.py` if needed).
-3. Plan: at least **512 MB RAM**; model image ~600 MB.
+```bash
+pip install huggingface_hub && huggingface-cli login
+bash scripts/upload-model-to-hf.sh YOUR_USERNAME/stm-sentiment
+```
 
-> **Tip:** For a class demo, Docker on your laptop is often enough. Cloud deploy is optional but impressive.
+### Deploy order
+
+1. **HF Space** — upload `deploy/huggingface/Dockerfile` + `README.md`, set secret `TRANSFORMER_HF_REPO`
+2. **Render backend** — Blueprint from `render-backend.yaml`, set `MONGODB_URI`, `ML_SERVICE_URL`, `CORS_ORIGIN`
+3. **Vercel frontend** — root `frontend`, set `VITE_API_URL=https://YOUR-BACKEND.onrender.com/api`
+
+> Render free tier sleeps after 15 min idle (first load ~30–60s). HF Spaces also sleep when idle.
 
 ---
 

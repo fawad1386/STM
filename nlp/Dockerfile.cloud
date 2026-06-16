@@ -1,0 +1,24 @@
+# Cloud build — downloads model from Hugging Face (no local transformer_model/ in git)
+FROM python:3.11-slim
+
+WORKDIR /app
+
+RUN apt-get update && apt-get install -y --no-install-recommends curl \
+    && rm -rf /var/lib/apt/lists/*
+
+COPY requirements-docker.txt requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt huggingface_hub
+
+COPY app.py transformer_predictor.py download_model.py ./
+
+ARG TRANSFORMER_HF_REPO=
+ENV TRANSFORMER_HF_REPO=${TRANSFORMER_HF_REPO}
+ENV TRANSFORMER_PATH=/app/transformer_model
+ENV MODEL_TYPE=transformer
+
+EXPOSE 10000
+
+HEALTHCHECK --interval=30s --timeout=10s --start-period=180s --retries=5 \
+  CMD curl -f http://localhost:10000/health || exit 1
+
+CMD ["python", "app.py"]

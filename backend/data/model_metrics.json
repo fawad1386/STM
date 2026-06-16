@@ -1,0 +1,28 @@
+{
+  "activeModel": "transformer",
+  "models": [
+    {
+      "id": "lstm",
+      "name": "Dual-Input LSTM",
+      "description": "Stacked LSTM with TextBlob features",
+      "englishAccuracy": 0.822,
+      "f1Score": 0.8586,
+      "romanUrduAccuracy": null
+    },
+    {
+      "id": "transformer",
+      "name": "DistilBERT Multilingual",
+      "description": "Fine-tuned distilbert-base-multilingual-cased with Roman Urdu augmentation",
+      "englishAccuracy": 0.9,
+      "f1Score": 0.9185,
+      "romanUrduAccuracy": 0.792,
+      "baseModel": "distilbert-base-multilingual-cased",
+      "confusionMatrix": [[101, 7], [23, 169]]
+    }
+  ],
+  "romanUrduImprovement": {
+    "before": 0.458,
+    "after": 0.792,
+    "note": "Measured on held-out roman_urdu_eval.csv (24 samples)"
+  }
+}

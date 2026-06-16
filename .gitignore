@@ -1,0 +1,22 @@
+# Dependencies
+node_modules/
+**/node_modules/
+
+# Python
+nlp/.venv/
+__pycache__/
+*.pyc
+
+# Trained transformer (large; regenerate with train_transformer.py)
+nlp/transformer_model/
+
+# Env files
+.env
+backend/.env
+frontend/.env
+
+# OS / editor
+.DS_Store
+
+# Uploads
+backend/uploads/

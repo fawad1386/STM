@@ -1,0 +1,11 @@
+{
+  "name": "smart-trust-meter",
+  "private": true,
+  "scripts": {
+    "demo": "bash scripts/free-ports.sh && docker compose up --build",
+    "demo:local": "bash scripts/demo-local.sh",
+    "demo:down": "docker compose down",
+    "demo:restart": "docker compose down && docker compose up --build",
+    "demo:logs": "docker compose logs -f"
+  }
+}

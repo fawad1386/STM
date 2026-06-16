@@ -1,0 +1,18 @@
+{
+  "accuracy": 0.9,
+  "precision": 0.9602272727272727,
+  "recall": 0.8802083333333334,
+  "f1_score": 0.9184782608695652,
+  "epoch": 5,
+  "base_model": "distilbert-base-multilingual-cased",
+  "confusion_matrix": [
+    [
+      101,
+      7
+    ],
+    [
+      23,
+      169
+    ]
+  ]
+}

@@ -1,0 +1,6 @@
+*
+!app.py
+!transformer_predictor.py
+!transformer_model/**
+!requirements-docker.txt
+!Dockerfile

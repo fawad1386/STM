@@ -1,0 +1,102 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
+        env:
+          VITE_API_URL: https://stm-backend-5y3c.onrender.com/api
+
+  backend:
+    name: Backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+          cache-dependency-path: backend/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Syntax check
+        run: |
+          node --check server.js
+          node --check lib/sentiment.js
+          node --check lib/adminAuth.js
+
+      - name: Validate model metrics
+        run: node -e "JSON.parse(require('fs').readFileSync('data/model_metrics.json','utf8'))"
+
+      - name: Smoke test sentiment module
+        run: |
+          node -e "
+            const { analyzeSentimentLexicon } = require('./lib/sentiment');
+            const r = analyzeSentimentLexicon('Excellent service, very professional');
+            if (r.label !== 1) throw new Error('Lexicon fallback failed');
+            console.log('sentiment module ok');
+          "
+
+  nlp:
+    name: NLP (syntax)
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: nlp
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Python syntax check
+        run: |
+          python -m py_compile app.py download_model.py transformer_predictor.py
+
+      - name: Validate Roman Urdu eval CSV
+        run: |
+          python -c "
+          import csv
+          from pathlib import Path
+          path = Path('roman_urdu_eval.csv')
+          rows = list(csv.DictReader(path.open()))
+          assert len(rows) >= 20, f'expected >=20 eval rows, got {len(rows)}'
+          print(f'roman_urdu_eval.csv ok ({len(rows)} rows)')
+          "

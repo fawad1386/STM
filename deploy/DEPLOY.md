@@ -117,9 +117,9 @@ Deploys backend + ML on Render from one blueprint. Set `TRANSFORMER_HF_REPO` for
 |----------|-------|---------|
 | `VITE_API_URL` | Vercel | `https://stm-backend.onrender.com/api` |
 | `MONGODB_URI` | Render | `mongodb+srv://...@cluster.mongodb.net/test` |
-| `ML_SERVICE_URL` | Render | `https://user-stm-sentiment.hf.space` |
+| `ML_SERVICE_URL` | Render **backend** | `https://fawad1386-stm-sentiment.hf.space` ← Space API URL |
 | `CORS_ORIGIN` | Render | `https://stm.vercel.app` |
-| `TRANSFORMER_HF_REPO` | HF Space / Render ML | `user/stm-sentiment` |
+| `TRANSFORMER_HF_REPO` | HF Space / Render **ML** | `fawad1386/stm-sentiment` ← model repo, **not** the URL |
 | `ADMIN_API_KEY` | Render | auto-generated — keep secret |
 
 ---

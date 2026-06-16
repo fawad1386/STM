@@ -51,6 +51,18 @@ def _ensure_model():
     main()
 
 
+@app.get("/")
+def index():
+    return jsonify({
+        "service": "Smart Trust Meter ML",
+        "model": MODEL_TYPE,
+        "endpoints": {
+            "health": "GET /health",
+            "predict": "POST /predict  { \"text\": \"your review...\" }",
+        },
+    })
+
+
 @app.get("/health")
 def health():
     try:

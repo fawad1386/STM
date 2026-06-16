@@ -409,7 +409,7 @@ function DealershipDetail({ dealership, navigateTo }) {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {Object.entries(dealer.aspects)
-              .filter(([key, value]) => value && value.score)
+              .filter(([, value]) => value && value.score)
               .sort(([,a], [,b]) => (b.score || 0) - (a.score || 0))
               .map(([key, value]) => (
                 <AspectCard key={key} name={key} data={value} />
@@ -434,7 +434,7 @@ function DealershipDetail({ dealership, navigateTo }) {
 }
 
 // Submit Feedback Page
-function SubmitFeedback({ navigateTo }) {
+function SubmitFeedback() {
   const [dealerships, setDealerships] = useState([]);
   const [formData, setFormData] = useState({
     dealershipId: '',

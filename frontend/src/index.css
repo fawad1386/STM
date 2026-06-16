@@ -39,7 +39,7 @@
 
   h1, h2, h3 {
     @apply tracking-tight;
-    margin: 0;
+    margin: 0 !important;
   }
 }
 
